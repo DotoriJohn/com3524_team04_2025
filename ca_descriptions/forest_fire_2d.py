@@ -20,16 +20,8 @@ import numpy as np
 def transition_func(grid, neighbourstates, neighbourcounts):
     # dead = state == 0, live = state == 1
     # unpack state counts for state 0 and state 1
-    dead_neighbours, live_neighbours = neighbourcounts
-    # create boolean arrays for the birth & survival rules
-    # if 3 live neighbours and is dead -> cell born
-    birth = (live_neighbours == 3) & (grid == 0)
-    # if 2 or 3 live neighbours and is alive -> survives
-    survive = ((live_neighbours == 2) | (live_neighbours == 3)) & (grid == 1)
-    # Set all cells to 0 (dead)
+    unburnt_neighbours, burnt_neighbours, burning_neighbours = neighbourcounts
     grid[:, :] = 0
-    # Set cells to 1 where either cell is born or survives
-    grid[birth | survive] = 1
     return grid
 
 
@@ -48,7 +40,6 @@ def setup(args):
 
     # ---- Override the defaults below (these may be changed at anytime) ----
 
-    # config.state_colors = [(0,0,0),(1,1,1)]
     # config.num_generations = 150
     # config.grid_dims = (200,200)
 
