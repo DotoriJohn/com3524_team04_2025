@@ -37,7 +37,7 @@ def setup(args):
     config_path = args[0]
     config = utils.load(config_path)
     # ---THE CA MUST BE RELOADED IN THE GUI IF ANY OF THE BELOW ARE CHANGED---
-    config.title = "Conway's game of life"
+    config.title = "Wildfire Simulator"
     config.dimensions = 2
     config.states = (0, 1)
     # ------------------------------------------------------------------------
@@ -46,7 +46,7 @@ def setup(args):
 
     # config.state_colors = [(0,0,0),(1,1,1)]
     # config.num_generations = 150
-    # config.grid_dims = (200,200)
+    config.grid_dims = (20,20)
 
     # ----------------------------------------------------------------------
 
