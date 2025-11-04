@@ -27,10 +27,6 @@ CANYON = 6
 
 
 def transition_func(grid, neighbourstates, neighbourcounts):
-    # dead = state == 0, live = state == 1
-    # unpack state counts for state 0 and state 1
-    # unburnt_neighbours, burnt_neighbours, burning_neighbours = neighbourcounts
-
     (
         unburnt_neighbours,
         burning_neighbours,
@@ -41,14 +37,22 @@ def transition_func(grid, neighbourstates, neighbourcounts):
         canyon_neighbours,
     ) = neighbourcounts
 
-    grid[:, :] = 0
+    grid_copy = grid.copy()
+
+    on_fire = (burning_neighbours >= 1) & (grid == UNBURNT)
+
+    # Set cells to BURNING where on_fire condition is met
+    grid[on_fire] = BURNING
+
+    # Cells that are BURNING become BURNT
+    grid[grid_copy == BURNING] = BURNT
+
     return grid
 
 
 def setup(args):
     config_path = args[0]
     config = utils.load(config_path)
-    # ---THE CA MUST BE RELOADED IN THE GUI IF ANY OF THE BELOW ARE CHANGED---
     config.title = "Wildfire Simulation - 2D"
 
     config.dimensions = 2
@@ -74,14 +78,8 @@ def setup(args):
         (0.55, 0.27, 0.07),  # canyon - brown
     ]
 
-    # ------------------------------------------------------------------------
-
-    # ---- Override the defaults below (these may be changed at anytime) ----
-
-    # config.num_generations = 150
-    # config.grid_dims = (200,200)
-
-    # ----------------------------------------------------------------------
+    config.num_generations = 150
+    config.grid_dims = (200, 200)
 
     if len(args) == 2:
         config.save()
