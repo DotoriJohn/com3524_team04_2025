@@ -17,10 +17,30 @@ import capyle.utils as utils
 import numpy as np
 
 
+UNBURNT = 0
+BURNING = 1
+BURNT = 2
+LAKE = 3
+CHAPARRAL = 4
+DENSE_FOREST = 5
+CANYON = 6
+
+
 def transition_func(grid, neighbourstates, neighbourcounts):
     # dead = state == 0, live = state == 1
     # unpack state counts for state 0 and state 1
-    unburnt_neighbours, burnt_neighbours, burning_neighbours = neighbourcounts
+    # unburnt_neighbours, burnt_neighbours, burning_neighbours = neighbourcounts
+
+    (
+        unburnt_neighbours,
+        burning_neighbours,
+        burnt_neighbours,
+        lake_neighbours,
+        chaparral_neighbours,
+        dense_forest_neighbours,
+        canyon_neighbours,
+    ) = neighbourcounts
+
     grid[:, :] = 0
     return grid
 
@@ -32,9 +52,27 @@ def setup(args):
     config.title = "Wildfire Simulation - 2D"
 
     config.dimensions = 2
-    # States : 0=unburnt (green), 1=burning (red), 2=burnt (black)
-    config.states = (0, 1, 2)
-    config.state_colors = [(0, 0.6, 0), (1, 0, 0), (0.2, 0.2, 0.2)]
+    # States : 0=unburnt (green), 1=burning (red), 2=burnt (black), 3=lake (blue), 4=chaparral (tan), 5=dense forest (dark green), 6=canyon (brown)
+
+    config.states = [
+        UNBURNT,
+        BURNING,
+        BURNT,
+        LAKE,
+        CHAPARRAL,
+        DENSE_FOREST,
+        CANYON,
+    ]
+
+    config.state_colors = [
+        (0.0, 0.6, 0.0),  # unburnt - green
+        (1.0, 0.0, 0.0),  # burning - red
+        (0.1, 0.1, 0.1),  # burnt - black
+        (0.0, 0.0, 1.0),  # lake - blue
+        (0.82, 0.71, 0.55),  # chaparral - tan
+        (0.0, 0.39, 0.0),  # dense forest - dark green
+        (0.55, 0.27, 0.07),  # canyon - brown
+    ]
 
     # ------------------------------------------------------------------------
 
