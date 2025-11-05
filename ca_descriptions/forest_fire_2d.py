@@ -26,7 +26,7 @@ DENSE_FOREST = 5
 CANYON = 6
 
 
-def transition_func(grid, neighbourstates, neighbourcounts):
+def transition_func(grid, neighbourstates, neighbourcounts, decay_grid):
     (
         unburnt_neighbours,
         burning_neighbours,
@@ -80,6 +80,7 @@ def setup(args):
 
     config.num_generations = 150
     config.grid_dims = (200, 200)
+    config.wrap = False
 
     if len(args) == 2:
         config.save()
@@ -92,9 +93,14 @@ def main():
     # Open the config object
     config = setup(sys.argv[1:])
 
-    # Create grid object
-    grid = Grid2D(config, transition_func)
+    decay_grid = np.zeros(config.grid_dims)
+    decay_grid.fill(2)
 
+    # Create grid object
+    grid = Grid2D(
+        config,
+        (transition_func, decay_grid),
+    )
     # Run the CA, save grid state every generation to timeline
     timeline = grid.run()
 
