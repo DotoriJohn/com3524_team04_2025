@@ -79,7 +79,7 @@ def setup(args):
     ]
 
     config.num_generations = 150
-    config.grid_dims = (200, 200)
+    config.grid_dims = (20, 20)
     config.wrap = False
 
     if len(args) == 2:
