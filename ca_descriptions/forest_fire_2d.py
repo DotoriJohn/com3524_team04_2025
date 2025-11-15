@@ -131,8 +131,8 @@ def setup(args):
         (0.55, 0.27, 0.07),  # canyon - brown
     ]
 
-    config.num_generations = 150
-    config.grid_dims = (200, 200)
+    config.num_generations = 70
+    config.grid_dims = (20, 20)
     config.wrap = False
 
     if len(args) == 2:
