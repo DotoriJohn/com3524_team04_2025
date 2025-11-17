@@ -34,6 +34,14 @@ IGNITION_PROB = {CHAPARRAL: 0.70, DENSE_FOREST: 0.35, CANYON: 0.90}
 # thresholds for ignition, forest needs more than 2 burning neighboeru, not easy to ignite but longer burning cycle
 TERRAIN_MIN_NEIGHBOURS = {CHAPARRAL: 1, DENSE_FOREST: 2, CANYON: 1}
 
+# factor to cause wind/acceleration of burning spread
+WIND_FACTOR = 1.5 
+
+# direction of wind - north - south
+WIND_DIRECTION = ( 1, 0)  # (dy, dx)
+
+# Wind speed - to be implemented later once basic wind is done.
+#WIND_SPEED = 2
 
 # need to make a function that count burning neighbours
 
@@ -68,16 +76,64 @@ def transition_func(grid, neighbourstates, neighbourcounts, decay_grid):
     is_forest = grid_copy == DENSE_FOREST
     is_canyon = grid_copy == CANYON
 
-    # Terrain-specific neighbour thresholds (use burning_neighbours from neighbourcounts)
-    # ready as ready to spread/ can spread fire
-    # ready only if burning neighbours bigger or equal to minimum neighbours of each terrain
+    # Compute directional weights based on wind
+    # normalize wind vector to unit vector (only direction)
+    wind_vector = np.array(WIND_DIRECTION, dtype=float)
+    wind_norm = np.linalg.norm(wind_vector)
+    if wind_norm > 0:
+        wind_unit = wind_vector / wind_norm
+    else:
+        wind_unit = np.array([0.0, 0.0])
+
+    # Direction vectors and their names for all 8 neighbours
+    directions = [
+        ("NW", np.array([-1.0, -1.0])),
+        ("N", np.array([-1.0, 0.0])),
+        ("NE", np.array([-1.0, 1.0])),
+        ("W", np.array([0.0, -1.0])),
+        ("E", np.array([0.0, 1.0])),
+        ("SW", np.array([1.0, -1.0])),
+        ("S", np.array([1.0, 0.0])),
+        ("SE", np.array([1.0, 1.0])),
+    ]
+
+    # Compute weight for each direction (exponential alignment-based)
+    # weight = exp(ln(WIND_FACTOR) * alignment), where alignment = dot(d_unit, wind_unit)
+    weights = {}
+    for dir_name, dir_vec in directions:
+        dir_norm = np.linalg.norm(dir_vec)
+
+        #compute unit vector for neighbour direction
+        if dir_norm > 0:
+            dir_unit = dir_vec / dir_norm
+        else:
+            dir_unit = dir_vec
+        alignment = np.dot(dir_unit, wind_unit)
+        beta = np.log(WIND_FACTOR) if WIND_FACTOR > 0 else 0
+        weight = np.exp(beta * alignment)
+        weights[dir_name] = weight #southern neighbours burn more
+
+    # Apply weights to neighbour burning counts
+    # neighbourstates is tuple: (NW, N, NE, W, E, SW, S, SE)
+    NW, N, NE, W, E, SW, S, SE = neighbourstates
+    neighbour_arrays = {"NW": NW, "N": N, "NE": NE, "W": W, "E": E, "SW": SW, "S": S, "SE": SE}
+
+    # Compute weighted burning neighbours: sum(weight_i * I(neighbour_i == BURNING))
+    weighted_burning = np.zeros(grid.shape, dtype=float)
+    for dir_name, neighbour_array in neighbour_arrays.items():
+        is_burning = neighbour_array == BURNING
+        weighted_burning += weights[dir_name] * is_burning
+
+    # Terrain-specific neighbour thresholds using weighted count
+    # ready as ready to spread / can spread fire
+    # ready only if weighted burning neighbours >= minimum neighbours of each terrain
     chap_ready = is_chaparral & (
-        burning_neighbours >= TERRAIN_MIN_NEIGHBOURS[CHAPARRAL]
+        weighted_burning >= TERRAIN_MIN_NEIGHBOURS[CHAPARRAL]
     )
     forest_ready = is_forest & (
-        burning_neighbours >= TERRAIN_MIN_NEIGHBOURS[DENSE_FOREST]
+        weighted_burning >= TERRAIN_MIN_NEIGHBOURS[DENSE_FOREST]
     )
-    canyon_ready = is_canyon & (burning_neighbours >= TERRAIN_MIN_NEIGHBOURS[CANYON])
+    canyon_ready = is_canyon & (weighted_burning >= TERRAIN_MIN_NEIGHBOURS[CANYON])
 
     # Probabilistic ignition per terrain
     # ignite only when terrain is ready to ignite and when the ignititon probability is bigger than random grid
