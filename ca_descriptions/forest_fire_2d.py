@@ -118,11 +118,36 @@ def transition_func(grid, neighbourstates, neighbourcounts, decay_grid):
     NW, N, NE, W, E, SW, S, SE = neighbourstates
     neighbour_arrays = {"NW": NW, "N": N, "NE": NE, "W": W, "E": E, "SW": SW, "S": S, "SE": SE}
 
-    # Compute weighted burning neighbours: sum(weight_i * I(neighbour_i == BURNING))
-    weighted_burning = np.zeros(grid.shape, dtype=float)
+    weighted_burning = np.zeros(grid.shape, dtype=float) 
+    pw_num = np.zeros(grid.shape, dtype=float)  # numerator for pw (sum of wind weights at burning neighbours)
+    pw_den = np.zeros(grid.shape, dtype=float)  # denominator (number of burning neighbours)
+
     for dir_name, neighbour_array in neighbour_arrays.items():
         is_burning = neighbour_array == BURNING
+
         weighted_burning += weights[dir_name] * is_burning
+
+        # for pw (wind probability): accumulate weight only where neighbour is burning
+        pw_num += weights[dir_name] * is_burning
+        pw_den += is_burning
+
+    # Compute pw field: average wind weight of burning neighbours, default 1 when no burning neighbours
+    pw_field = np.ones(grid.shape, dtype=float)
+    has_burning_neigh = pw_den > 0
+    pw_field[has_burning_neigh] = pw_num[has_burning_neigh] / pw_den[has_burning_neigh]
+
+    # Start with base (no-wind) ignition probability per terrain
+    pburn = np.zeros(grid.shape, dtype=float)
+
+    pburn[is_chaparral] = IGNITION_PROB[CHAPARRAL]
+    pburn[is_forest]    = IGNITION_PROB[DENSE_FOREST]
+    pburn[is_canyon]    = IGNITION_PROB[CANYON]
+
+    # Multiply by wind factor pw: pburn = p0(1+pveg)(1+pden)*ps * pw
+    pburn *= pw_field
+
+    # Ensure probabilities stay within [0,1]
+    pburn = np.clip(pburn, 0.0, 1.0)
 
     # Terrain-specific neighbour thresholds using weighted count
     # ready as ready to spread / can spread fire
@@ -137,9 +162,9 @@ def transition_func(grid, neighbourstates, neighbourcounts, decay_grid):
 
     # Probabilistic ignition per terrain
     # ignite only when terrain is ready to ignite and when the ignititon probability is bigger than random grid
-    ignite_chap = chap_ready & (rng < IGNITION_PROB[CHAPARRAL])
-    ignite_forest = forest_ready & (rng < IGNITION_PROB[DENSE_FOREST])
-    ignite_canyon = canyon_ready & (rng < IGNITION_PROB[CANYON])
+    ignite_chap = chap_ready & (rng < pburn) & is_chaparral
+    ignite_forest = forest_ready & (rng < pburn) & is_forest
+    ignite_canyon = canyon_ready & (rng < pburn) & is_canyon
 
     on_fire = ignite_chap | ignite_forest | ignite_canyon
 
