@@ -40,8 +40,8 @@ WIND_FACTOR = 1.5
 # direction of wind - north - south
 WIND_DIRECTION = ( 1, 0)  # (dy, dx)
 
-# Wind speed - to be implemented later once basic wind is done.
-#WIND_SPEED = 2
+# Wind speed 
+WIND_SPEED = 3 # scale of 0-3 (0=no wind, 3=high wind)
 
 # need to make a function that count burning neighbours
 
@@ -108,8 +108,8 @@ def transition_func(grid, neighbourstates, neighbourcounts, decay_grid):
             dir_unit = dir_vec / dir_norm
         else:
             dir_unit = dir_vec
-        alignment = np.dot(dir_unit, wind_unit)
-        beta = np.log(WIND_FACTOR) if WIND_FACTOR > 0 else 0
+        alignment = np.dot(-dir_unit, wind_unit)
+        beta = (np.log(WIND_FACTOR) * WIND_SPEED) if WIND_FACTOR > 0 else 0
         weight = np.exp(beta * alignment)
         weights[dir_name] = weight #southern neighbours burn more
 
