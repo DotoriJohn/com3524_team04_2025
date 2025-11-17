@@ -186,9 +186,9 @@ def setup(args):
         (0.0, 0.39, 0.0),  # dense forest - dark green
         (0.55, 0.27, 0.07),  # canyon - brown
     ]
-
-    config.num_generations = 70
-    config.grid_dims = (20, 20)
+    config.chunk_size = 10
+    config.num_generations = 280
+    config.grid_dims = (20 * config.chunk_size, 20 * config.chunk_size)
     config.wrap = False
 
     if len(args) == 2:
