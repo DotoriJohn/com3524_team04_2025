@@ -65,7 +65,9 @@ def compute_directional_weights(wind_unit) -> dict:
     return weights
 
 
-def compute_weighted_burning_and_wind_field(neighbourstates, grid_shape, weights):
+def compute_weighted_burning_and_wind_field(
+    neighbourstates, grid_shape, weights
+) -> tuple:
     """
     From neighbour states and directional weights, compute:
       - weighted_burning: weighted count of burning neighbours
@@ -118,14 +120,13 @@ def update_burning_cells(grid, decay_grid):
     decay_grid[finished] = 0
 
 
-def compute_terrain_masks(grid_copy):
+def compute_terrain_masks(grid_copy: np.ndarray) -> tuple:
     """Return boolean masks for each terrain type."""
-    is_lake = grid_copy == LAKE
     is_chaparral = grid_copy == CHAPARRAL
     is_forest = grid_copy == DENSE_FOREST
     is_canyon = grid_copy == CANYON
     is_town = grid_copy == TOWN
-    return is_lake, is_chaparral, is_forest, is_canyon, is_town
+    return is_chaparral, is_forest, is_canyon, is_town
 
 
 def apply_ignition(

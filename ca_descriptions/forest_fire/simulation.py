@@ -30,25 +30,13 @@ from helpers.forest_states import *
 
 
 def transition_func(grid, neighbourstates, neighbourcounts, decay_grid):
-    (
-        burning_neighbours,
-        burnt_neighbours,
-        lake_neighbours,
-        chaparral_neighbours,
-        dense_forest_neighbours,
-        canyon_neighbours,
-        town_neighbours,
-    ) = neighbourcounts
-
     grid_copy = grid.copy()
 
     # Progress existing fires
     update_burning_cells(grid, decay_grid)
 
     # Terrain masks
-    is_lake, is_chaparral, is_forest, is_canyon, is_town = compute_terrain_masks(
-        grid_copy
-    )
+    is_chaparral, is_forest, is_canyon, is_town = compute_terrain_masks(grid_copy)
 
     # Wind: directional weights + weighted burning + wind field
     wind_unit = compute_wind_unit_vector()
