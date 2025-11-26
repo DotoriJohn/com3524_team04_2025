@@ -61,6 +61,7 @@ def transition_func(grid, neighbourstates, neighbourcounts, timestep, decay_grid
         is_forest=is_forest,
         is_canyon=is_canyon,
         is_town=is_town,
+        timestep=timestep,
     )
 
     return grid

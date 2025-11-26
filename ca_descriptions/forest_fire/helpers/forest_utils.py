@@ -139,6 +139,7 @@ def apply_ignition(
     is_forest,
     is_canyon,
     is_town,
+    timestep,
 ) -> None:
     """
     Apply probabilistic ignition rules based on terrain, neighbours, and wind.
@@ -178,6 +179,9 @@ def apply_ignition(
     new_forest = on_fire & is_forest
     new_canyon = on_fire & is_canyon
     new_town = on_fire & is_town
+
+    if new_town.any():
+        print(f"Timestep {timestep}: Town cells ignited!")
 
     decay_grid[new_chap] = BURN_DURATION[CHAPARRAL]
     decay_grid[new_forest] = BURN_DURATION[DENSE_FOREST]
