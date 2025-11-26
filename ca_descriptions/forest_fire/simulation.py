@@ -25,20 +25,12 @@ from helpers.forest_utils import (
     update_burning_cells,
 )
 
-# state definitions (fire + terrain)
-UNBURNT = 0
-BURNING = 1
-BURNT = 2
-LAKE = 3
-CHAPARRAL = 4
-DENSE_FOREST = 5
-CANYON = 6
-TOWN = 7
+# not good to wildcard import, but keeping code clean here
+from helpers.forest_states import *
 
 
 def transition_func(grid, neighbourstates, neighbourcounts, decay_grid):
     (
-        unburnt_neighbours,
         burning_neighbours,
         burnt_neighbours,
         lake_neighbours,
@@ -94,7 +86,6 @@ def setup(args):
     config.dimensions = 2
 
     config.states = [
-        UNBURNT,
         BURNING,
         BURNT,
         LAKE,
@@ -105,7 +96,6 @@ def setup(args):
     ]
 
     config.state_colors = [
-        (0.0, 0.6, 0.0),  # unburnt - green
         (1.0, 0.0, 0.0),  # burning - red
         (0.1, 0.1, 0.1),  # burnt - black
         (0.0, 0.0, 1.0),  # lake - blue

@@ -1,12 +1,6 @@
 import numpy as np
+from helpers.forest_states import *
 
-BURNING = 1
-BURNT = 2
-LAKE = 3
-CHAPARRAL = 4
-DENSE_FOREST = 5
-CANYON = 6
-TOWN = 7
 
 # how many cycles a cell remain burning before burnt
 BURN_DURATION = {CHAPARRAL: 6, DENSE_FOREST: 15, CANYON: 3, TOWN: 5}  # Lake never burns
@@ -27,7 +21,7 @@ WIND_DIRECTION = (1, 0)  # (dy, dx)
 WIND_SPEED = 3  # scale of 0-3 (0=no wind, 3=high wind)
 
 
-def compute_wind_unit_vector():
+def compute_wind_unit_vector() -> np.ndarray:
     """Return the unit wind vector based on global WIND_DIRECTION."""
     wind_vector = np.array(WIND_DIRECTION, dtype=float)
     wind_norm = np.linalg.norm(wind_vector)
@@ -36,7 +30,7 @@ def compute_wind_unit_vector():
     return np.array([0.0, 0.0])
 
 
-def compute_directional_weights(wind_unit):
+def compute_directional_weights(wind_unit) -> dict:
     """
     Compute weight for each neighbour direction based on alignment with the wind.
     Returns a dict mapping direction name -> weight.
