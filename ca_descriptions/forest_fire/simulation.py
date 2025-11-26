@@ -12,7 +12,7 @@ sys.path.append(main_dir_loc + "capyle/ca")
 sys.path.append(main_dir_loc + "capyle/guicomponents")
 # ---
 
-from helpers.forest_grid import Grid2D
+from helpers.grids.forest_grid import Grid2D
 import capyle.utils as utils
 import numpy as np
 
@@ -93,7 +93,7 @@ def setup(args):
         (0.55, 0.27, 0.07),  # canyon - brown
         (0.5, 0.5, 0.5),  # town - gray
     ]
-    config.chunk_size = 10
+    config.chunk_size = 3
     config.num_generations = 280
     config.grid_dims = (20 * config.chunk_size, 20 * config.chunk_size)
     config.wrap = False
