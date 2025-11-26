@@ -6,7 +6,7 @@ from helpers.forest_states import *
 BURN_DURATION = {CHAPARRAL: 6, DENSE_FOREST: 15, CANYON: 3, TOWN: 5}  # Lake never burns
 
 # base ignition probability by terrain
-IGNITION_PROB = {CHAPARRAL: 0.70, DENSE_FOREST: 0.35, CANYON: 0.90, TOWN: 0.7}
+IGNITION_PROB = {CHAPARRAL: 0.70, DENSE_FOREST: 0.2, CANYON: 0.90, TOWN: 0.7}
 
 # thresholds for ignition, forest needs more than 2 burning neighbour, not easy to ignite but longer burning cycle
 TERRAIN_MIN_NEIGHBOURS = {CHAPARRAL: 1, DENSE_FOREST: 2, CANYON: 1, TOWN: 1}
@@ -15,7 +15,7 @@ TERRAIN_MIN_NEIGHBOURS = {CHAPARRAL: 1, DENSE_FOREST: 2, CANYON: 1, TOWN: 1}
 WIND_FACTOR = 1.5
 
 # direction of wind - north - south
-WIND_DIRECTION = (1, 0)  # (dy, dx)
+WIND_DIRECTION = (1, -1)  # (dy, dx)
 
 # Wind speed
 WIND_SPEED = 3  # scale of 0-3 (0=no wind, 3=high wind)
