@@ -28,7 +28,42 @@ class Grid2D(Grid):
 
         # Generate the indices only once per grid
         self.wrapindicies, self.gridindicies = self._gen_wrap_indicies(wrapsize)
+        basegrid = np.array(
+            [
+                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1],
+                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 4, 4, 3, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 4, 4, 3, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 4, 4, 3, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 4, 4, 3, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
+                [4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4],
+                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+            ]
+        )
+        # assign variables for grid enlargement
+        chunksize = ca_config.chunk_size
 
+        currentterrain = 0
+        for y in range(20):
+            for x in range(20):
+                currentterrain = basegrid[x, y]
+                for j in range(chunksize):
+                    for i in range(chunksize):
+                        ca_config.initial_grid[i + chunksize * x, j + chunksize * y] = (
+                            currentterrain
+                        )
         # if at t = 0 grid has been supplied, set the states
         if ca_config.initial_grid is not None:
             self.set_grid(ca_config.initial_grid)
@@ -152,7 +187,7 @@ class Grid2D(Grid):
         return state_counts
 
     def step(self):
-        """Calculate the next timestep by applying the transistion function
+        """Calculate the next timestep by applying the transition function
         and save the new state to grid"""
         # collect the 8 arrays of neighbour states
         ns = self.get_neighbour_states()
