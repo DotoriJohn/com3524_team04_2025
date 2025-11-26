@@ -50,7 +50,7 @@ def transition_func(grid, neighbourstates, neighbourcounts, decay_grid):
     # Random field for stochastic ignition
     rng = np.random.random(grid.shape)
 
-    # 5) Apply ignition given terrain, neighbours, wind
+    # Apply ignition given terrain, neighbours, wind
     apply_ignition(
         grid=grid,
         decay_grid=decay_grid,

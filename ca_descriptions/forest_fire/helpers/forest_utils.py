@@ -139,7 +139,7 @@ def apply_ignition(
     is_forest,
     is_canyon,
     is_town,
-):
+) -> None:
     """
     Apply probabilistic ignition rules based on terrain, neighbours, and wind.
     Modifies grid and decay_grid in place.
