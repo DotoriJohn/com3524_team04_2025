@@ -29,7 +29,7 @@ from helpers.forest_utils import (
 from helpers.forest_states import *
 
 
-def transition_func(grid, neighbourstates, neighbourcounts, decay_grid):
+def transition_func(grid, neighbourstates, neighbourcounts, timestep, decay_grid):
     grid_copy = grid.copy()
 
     # Progress existing fires
@@ -109,14 +109,13 @@ def main():
     config = setup(sys.argv[1:])
 
     decay_grid = np.zeros(config.grid_dims)
-    # decay_grid.fill(2)
-    # -> lakes and unlit terrain starts with the timer
 
     # Create grid object
     grid = Grid2D(
         config,
         (transition_func, decay_grid),
     )
+
     # Run the CA, save grid state every generation to timeline
     timeline = grid.run()
 

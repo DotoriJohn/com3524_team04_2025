@@ -16,6 +16,7 @@ class Grid2D(Grid):
 
         # store a handle on config object
         self.ca_config = ca_config
+        self.timestep = 1
 
         # wrap size is 1 col & row all the way round the grid
         wrapsize = 1
@@ -199,9 +200,13 @@ class Grid2D(Grid):
         # passing in the states and counts to allow complex rules
         # if the user supplied any addition arguments, pass them here
         if self.additional_args is None:
-            self.grid = self.transition_func(self.grid, ns, nc)
+            self.grid = self.transition_func(self.grid, ns, nc, self.timestep)
         else:
-            self.grid = self.transition_func(self.grid, ns, nc, *self.additional_args)
+            self.grid = self.transition_func(
+                self.grid, ns, nc, self.timestep, *self.additional_args
+            )
+
+        self.timestep += 1
         # refresh wrapping border
         self.refresh_wrap()
 
