@@ -4,8 +4,22 @@ from capyle.utils import clip_numeric
 import helpers.grids as hg
 
 
+def _enlarge_grid(grid, chunksize) -> np.ndarray:
+    initial_grid = np.zeros((grid.shape[0] * chunksize, grid.shape[1] * chunksize))
+
+    for y in range(20):
+        for x in range(20):
+            currentterrain = grid[x, y]
+            for j in range(chunksize):
+                for i in range(chunksize):
+                    initial_grid[i + chunksize * x, j + chunksize * y] = currentterrain
+
+    return initial_grid
+
+
 class Grid2D(Grid):
-    basegrid = hg.lake_grid_meet
+    DEFAULT_CHUNKSIZE = 3
+    basegrid = _enlarge_grid(hg.forest_grid, DEFAULT_CHUNKSIZE)
 
     def __init__(self, ca_config, transition_func):
         # create superclass
@@ -31,18 +45,9 @@ class Grid2D(Grid):
 
         # Generate the indices only once per grid
         self.wrapindicies, self.gridindicies = self._gen_wrap_indicies(wrapsize)
-        # assign variables for grid enlargement
-        chunksize = ca_config.chunk_size
 
-        currentterrain = 0
-        for y in range(20):
-            for x in range(20):
-                currentterrain = self.basegrid[x, y]
-                for j in range(chunksize):
-                    for i in range(chunksize):
-                        ca_config.initial_grid[i + chunksize * x, j + chunksize * y] = (
-                            currentterrain
-                        )
+        ca_config.initial_grid = Grid2D.basegrid
+
         # if at t = 0 grid has been supplied, set the states
         if ca_config.initial_grid is not None:
             self.set_grid(ca_config.initial_grid)
