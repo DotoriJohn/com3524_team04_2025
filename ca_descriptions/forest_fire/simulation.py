@@ -131,7 +131,7 @@ def setup(args):
         (0.5, 0.5, 0.5),  # town - gray
     ]
     config.chunk_size = 3
-    config.num_generations = 280
+    config.num_generations = 160
     config.grid_dims = (20 * config.chunk_size, 20 * config.chunk_size)
     config.wrap = False
 
