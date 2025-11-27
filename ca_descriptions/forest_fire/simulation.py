@@ -93,7 +93,7 @@ def setup(args):
         (0.55, 0.27, 0.07),  # canyon - brown
         (0.5, 0.5, 0.5),  # town - gray
     ]
-    config.chunk_size = 3
+    config.chunk_size = Grid2D.DEFAULT_CHUNKSIZE
     config.num_generations = 280
     config.grid_dims = (20 * config.chunk_size, 20 * config.chunk_size)
     config.wrap = False
