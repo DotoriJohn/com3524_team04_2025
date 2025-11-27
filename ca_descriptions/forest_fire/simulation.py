@@ -25,6 +25,8 @@ from helpers.forest_utils import (
     update_burning_cells,
 )
 
+from helpers.metrics import plot_burnt_percentages, default_burnt_plot_path
+
 # not good to wildcard import, but keeping code clean here
 from helpers.forest_states import *
 
@@ -159,6 +161,10 @@ def main():
     config.save()
     # save timeline to file
     utils.save(timeline, config.timeline_path)
+
+    plot_path = default_burnt_plot_path()
+    plot_burnt_percentages(burnt_percentages, plot_path)
+    print(f"Saved burn plot to {plot_path}")
 
 
 if __name__ == "__main__":
