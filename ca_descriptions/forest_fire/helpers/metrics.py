@@ -11,7 +11,7 @@ def default_burnt_plot_path(filename: str = "burnt_percentages.png") -> str:
 
 
 def plot_burnt_percentages(stats, save_path=None):
-    """Create a matplotlib plot from the collected burnt percentage stats."""
+    """Create a matplotlib plot from the collected burnt percentage stats (BURNT only)."""
     if not stats:
         return None
 
@@ -33,9 +33,9 @@ def plot_burnt_percentages(stats, save_path=None):
         ax.plot(timesteps, percents, label=key.replace("_", " ").title())
 
     ax.set_xlabel("Timestep")
-    ax.set_ylabel("Burning/Burnt (%)")
+    ax.set_ylabel("Burnt (%)")
     ax.set_ylim(0, 100)
-    ax.set_title("Burn progression by terrain")
+    ax.set_title("Burnt progression by terrain")
     ax.legend(loc="upper left")
     ax.grid(True, linewidth=0.5, alpha=0.4)
     fig.tight_layout()

@@ -47,7 +47,7 @@ def compute_burnt_percentages(grid: np.ndarray, base_grid: np.ndarray, timestep:
         "town": TOWN,
     }
 
-    burning_or_burnt = (grid == BURNING) | (grid == BURNT)
+    burnt_mask = grid == BURNT
     summary = {"timestep": timestep}
 
     for terrain_name, terrain_state in terrain_lookup.items():
@@ -57,7 +57,7 @@ def compute_burnt_percentages(grid: np.ndarray, base_grid: np.ndarray, timestep:
             summary[terrain_name] = 0.0  # type: ignore
             continue
 
-        affected_cells = burning_or_burnt & terrain_mask
+        affected_cells = burnt_mask & terrain_mask
         summary[terrain_name] = affected_cells.sum() / total_cells
 
     return summary
