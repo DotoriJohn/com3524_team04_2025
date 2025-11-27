@@ -1,9 +1,11 @@
 import numpy as np
-from capyle.ca import Grid, Neighbourhood
+from capyle.ca import Grid
 from capyle.utils import clip_numeric
+import helpers.grids as hg
 
 
 class Grid2D(Grid):
+    basegrid = hg.forest_grid
 
     def __init__(self, ca_config, transition_func):
         # create superclass
@@ -29,37 +31,13 @@ class Grid2D(Grid):
 
         # Generate the indices only once per grid
         self.wrapindicies, self.gridindicies = self._gen_wrap_indicies(wrapsize)
-        basegrid = np.array(
-            [
-                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1],
-                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 4, 4, 3, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 4, 4, 3, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 4, 4, 3, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 4, 4, 3, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 4, 4, 4, 4],
-                [4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4],
-                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4],
-                [4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-            ]
-        )
         # assign variables for grid enlargement
         chunksize = ca_config.chunk_size
 
         currentterrain = 0
         for y in range(20):
             for x in range(20):
-                currentterrain = basegrid[x, y]
+                currentterrain = self.basegrid[x, y]
                 for j in range(chunksize):
                     for i in range(chunksize):
                         ca_config.initial_grid[i + chunksize * x, j + chunksize * y] = (

@@ -12,7 +12,7 @@ sys.path.append(main_dir_loc + "capyle/ca")
 sys.path.append(main_dir_loc + "capyle/guicomponents")
 # ---
 
-from helpers.grids.forest_grid_ingition import Grid2D
+from helpers.forest_grid import Grid2D
 import capyle.utils as utils
 import numpy as np
 
