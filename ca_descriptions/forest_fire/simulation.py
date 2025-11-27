@@ -25,13 +25,20 @@ from helpers.forest_utils import (
     update_burning_cells,
 )
 
-from helpers.metrics import plot_burnt_percentages, default_burnt_plot_path
+from helpers.metrics import (
+    plot_burnt_percentages,
+    default_burnt_plot_path,
+    compute_containment_efficiency,
+    save_scalar_metrics,
+    default_metrics_csv_path,
+)
 
 # not good to wildcard import, but keeping code clean here
 from helpers.forest_states import *
 
 # Storage for per-timestep burn statistics (used later for plotting)
 burnt_percentages = []
+first_town_ignition_time = None
 
 
 def compute_burnt_percentages(grid: np.ndarray, base_grid: np.ndarray, timestep: int):
@@ -98,6 +105,13 @@ def transition_func(grid, neighbourstates, neighbourcounts, timestep, decay_grid
         timestep=timestep,
     )
 
+    global first_town_ignition_time
+
+    # Time to first town ignition
+    town_burning = (grid == BURNING) & (Grid2D.basegrid == TOWN)
+    if first_town_ignition_time is None and np.any(town_burning):
+        first_town_ignition_time = timestep
+
     # Track burnt percentages for plotting/analysis
     burnt_percentages.append(compute_burnt_percentages(grid, Grid2D.basegrid, timestep))
 
@@ -130,8 +144,8 @@ def setup(args):
         (0.55, 0.27, 0.07),  # canyon - brown
         (0.5, 0.5, 0.5),  # town - gray
     ]
-    config.chunk_size = 3
-    config.num_generations = 280
+    config.chunk_size = Grid2D.DEFAULT_CHUNKSIZE
+    config.num_generations = 160
     config.grid_dims = (20 * config.chunk_size, 20 * config.chunk_size)
     config.wrap = False
 
@@ -165,6 +179,22 @@ def main():
     plot_path = default_burnt_plot_path()
     plot_burnt_percentages(burnt_percentages, plot_path)
     print(f"Saved burn plot to {plot_path}")
+
+    # Scalar metrics
+    final_grid = grid.grid
+    total_cells = final_grid.size
+    burnt_fraction = np.count_nonzero(final_grid == BURNT) / total_cells
+    final_timestep = config.num_generations
+    metrics = {
+        "first_town_ignition_timestep": first_town_ignition_time,
+        "final_burnt_fraction": burnt_fraction,
+        "containment_efficiency": compute_containment_efficiency(
+            burnt_fraction, 1, final_timestep  # type: ignore
+        ),
+    }
+    metrics_path = default_metrics_csv_path()
+    save_scalar_metrics(metrics, metrics_path)
+    print(f"Saved metrics to {metrics_path}")
 
 
 if __name__ == "__main__":
