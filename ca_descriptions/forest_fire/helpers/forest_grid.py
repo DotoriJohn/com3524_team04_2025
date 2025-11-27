@@ -19,7 +19,7 @@ def _enlarge_grid(grid, chunksize) -> np.ndarray:
 
 class Grid2D(Grid):
     DEFAULT_CHUNKSIZE = 3
-    basegrid = _enlarge_grid(hg.forest_grid, DEFAULT_CHUNKSIZE)
+    basegrid = _enlarge_grid(hg.water_grid_one, DEFAULT_CHUNKSIZE)
 
     def __init__(self, ca_config, transition_func):
         # create superclass
