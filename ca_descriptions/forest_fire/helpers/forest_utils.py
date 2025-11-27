@@ -15,7 +15,7 @@ TERRAIN_MIN_NEIGHBOURS = {CHAPARRAL: 1, DENSE_FOREST: 2, CANYON: 1, TOWN: 1}
 WIND_FACTOR = 1.5
 
 # direction of wind - north - south
-WIND_DIRECTION = (1, 0)  # (dy, dx)
+WIND_DIRECTION = (1, 0)  # (dy, dx) 
 
 # Wind speed
 WIND_SPEED = 0  # scale of 0-3 (0=no wind, 3=high wind)
