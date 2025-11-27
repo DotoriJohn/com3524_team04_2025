@@ -25,8 +25,42 @@ from helpers.forest_utils import (
     update_burning_cells,
 )
 
+from helpers.metrics import plot_burnt_percentages, default_burnt_plot_path
+
 # not good to wildcard import, but keeping code clean here
 from helpers.forest_states import *
+
+# Storage for per-timestep burn statistics (used later for plotting)
+burnt_percentages = []
+
+
+def compute_burnt_percentages(grid: np.ndarray, base_grid: np.ndarray, timestep: int):
+    """
+    Compare the current grid against the static base grid to calculate
+    the proportion of each terrain type that is burning or burnt.
+    Returns a dict containing the timestep and percentages keyed by terrain name.
+    """
+    terrain_lookup = {
+        "chaparral": CHAPARRAL,
+        "dense_forest": DENSE_FOREST,
+        "canyon": CANYON,
+        "town": TOWN,
+    }
+
+    burnt_mask = grid == BURNT
+    summary = {"timestep": timestep}
+
+    for terrain_name, terrain_state in terrain_lookup.items():
+        terrain_mask = base_grid == terrain_state
+        total_cells = terrain_mask.sum()
+        if total_cells == 0:
+            summary[terrain_name] = 0.0  # type: ignore
+            continue
+
+        affected_cells = burnt_mask & terrain_mask
+        summary[terrain_name] = affected_cells.sum() / total_cells
+
+    return summary
 
 
 def transition_func(grid, neighbourstates, neighbourcounts, timestep, decay_grid):
@@ -63,6 +97,9 @@ def transition_func(grid, neighbourstates, neighbourcounts, timestep, decay_grid
         is_town=is_town,
         timestep=timestep,
     )
+
+    # Track burnt percentages for plotting/analysis
+    burnt_percentages.append(compute_burnt_percentages(grid, Grid2D.basegrid, timestep))
 
     return grid
 
@@ -124,6 +161,10 @@ def main():
     config.save()
     # save timeline to file
     utils.save(timeline, config.timeline_path)
+
+    plot_path = default_burnt_plot_path()
+    plot_burnt_percentages(burnt_percentages, plot_path)
+    print(f"Saved burn plot to {plot_path}")
 
 
 if __name__ == "__main__":

@@ -217,3 +217,5 @@ __marimo__/
 
 temp/timeline.pkl
 pyrightconfig.json
+*.pkl
+metrics/
