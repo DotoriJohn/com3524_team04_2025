@@ -5,7 +5,7 @@ import helpers.grids as hg
 
 
 class Grid2D(Grid):
-    basegrid = hg.forest_grid
+    basegrid = hg.lake_grid_meet
 
     def __init__(self, ca_config, transition_func):
         # create superclass

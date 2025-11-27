@@ -3,7 +3,7 @@ from helpers.forest_states import *
 
 
 # how many cycles a cell remain burning before burnt
-BURN_DURATION = {CHAPARRAL: 6, DENSE_FOREST: 15, CANYON: 3, TOWN: 5}  # Lake never burns
+BURN_DURATION = {CHAPARRAL: 5, DENSE_FOREST: 30, CANYON: 0.5, TOWN: 3}  # Lake never burns
 
 # base ignition probability by terrain
 IGNITION_PROB = {CHAPARRAL: 0.70, DENSE_FOREST: 0.2, CANYON: 0.90, TOWN: 0.7}
@@ -18,7 +18,7 @@ WIND_FACTOR = 1.5
 WIND_DIRECTION = (1, 0)  # (dy, dx) 
 
 # Wind speed
-WIND_SPEED = 0  # scale of 0-3 (0=no wind, 3=high wind)
+WIND_SPEED = 1  # scale of 0-3 (0=no wind, 3=high wind)
 
 
 def compute_wind_unit_vector() -> np.ndarray:
