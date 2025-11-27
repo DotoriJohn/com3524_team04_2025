@@ -36,3 +36,11 @@ The grid will show:
 - Brown - canyon
 - Grey - town
 
+## 2. Changing Model Parameters (Wind, Burning Duration, Ignition Probabilites)
+
+The parameters are stored in:
+ca_description/forest_fire/settings.yaml
+
+After editing the YAML file, simply re-run python main.py and run the simulation again.
+
+
