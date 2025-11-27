@@ -15,10 +15,10 @@ TERRAIN_MIN_NEIGHBOURS = {CHAPARRAL: 1, DENSE_FOREST: 2, CANYON: 1, TOWN: 1}
 WIND_FACTOR = 1.5
 
 # direction of wind - north - south
-WIND_DIRECTION = (1, -1)  # (dy, dx)
+WIND_DIRECTION = (1, 0)  # (dy, dx)
 
 # Wind speed
-WIND_SPEED = 3  # scale of 0-3 (0=no wind, 3=high wind)
+WIND_SPEED = 0  # scale of 0-3 (0=no wind, 3=high wind)
 
 
 def compute_wind_unit_vector() -> np.ndarray:
@@ -52,15 +52,16 @@ def compute_directional_weights(wind_unit) -> dict:
         for name in directions:
             weights[name] = 1.0
         return weights
+    else:
+            
+        beta = np.log(WIND_FACTOR) * WIND_SPEED
 
-    beta = np.log(WIND_FACTOR) * WIND_SPEED
-
-    for dir_name, dir_vec in directions.items():
-        dir_norm = np.linalg.norm(dir_vec)
-        dir_unit = dir_vec / dir_norm if dir_norm > 0 else dir_vec
-        # note the minus sign: fire blows downwind
-        alignment = np.dot(-dir_unit, wind_unit)
-        weights[dir_name] = np.exp(beta * alignment)
+        for dir_name, dir_vec in directions.items():
+            dir_norm = np.linalg.norm(dir_vec)
+            dir_unit = dir_vec / dir_norm if dir_norm > 0 else dir_vec
+            # note the minus sign: fire blows downwind
+            alignment = np.dot(-dir_unit, wind_unit)
+            weights[dir_name] = np.exp(beta * alignment)
 
     return weights
 
