@@ -53,7 +53,7 @@ def compute_directional_weights(wind_unit) -> dict:
             weights[name] = 1.0
         return weights
     else:
-            
+
         beta = np.log(WIND_FACTOR) * WIND_SPEED
 
         for dir_name, dir_vec in directions.items():
