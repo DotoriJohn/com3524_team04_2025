@@ -27,7 +27,7 @@ def compute_containment_efficiency(
     if first_ignition_time is None:
         return None
     duration = max(final_timestep - first_ignition_time + 1, 1)
-    return burnt_fraction / duration
+    return (burnt_fraction / duration) * 100
 
 
 def save_scalar_metrics(metrics: dict, save_path: str | None = None):
