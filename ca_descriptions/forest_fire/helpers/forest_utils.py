@@ -1,24 +1,48 @@
 import numpy as np
 from helpers.forest_states import *
+import yaml
+import os
 
 
-# how many cycles a cell remain burning before burnt
-BURN_DURATION = {CHAPARRAL: 5, DENSE_FOREST: 30, CANYON: 0.5, TOWN: 3}  # Lake never burns
+def load_settings(settings_file="settings.yaml"):
+    """Load simulation parameters from YAML settings file."""
+    # Get the directory where this file is located
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    settings_path = os.path.join(current_dir, "..", settings_file)
+    
+    with open(settings_path, 'r') as f:
+        settings = yaml.safe_load(f)
+    
+    return settings
 
-# base ignition probability by terrain
-IGNITION_PROB = {CHAPARRAL: 0.70, DENSE_FOREST: 0.2, CANYON: 0.90, TOWN: 0.7}
+# Load settings from YAML file
+_settings = load_settings()
 
-# thresholds for ignition, forest needs more than 2 burning neighbour, not easy to ignite but longer burning cycle
-TERRAIN_MIN_NEIGHBOURS = {CHAPARRAL: 1, DENSE_FOREST: 2, CANYON: 1, TOWN: 1}
+# Parse YAML settings to create dictionaries for constant parameters
+BURN_DURATION = {
+    CHAPARRAL: _settings['burn-duration']['chaparral'],
+    DENSE_FOREST: _settings['burn-duration']['dense_forest'],
+    CANYON: _settings['burn-duration']['canyon'],
+    TOWN: _settings['burn-duration']['town']
+}
 
-# factor to cause wind/acceleration of burning spread
-WIND_FACTOR = 1.5
+IGNITION_PROB = {
+    CHAPARRAL: _settings['ignition-probability']['chaparral'],
+    DENSE_FOREST: _settings['ignition-probability']['dense_forest'],
+    CANYON: _settings['ignition-probability']['canyon'],
+    TOWN: _settings['ignition-probability']['town']
+}
 
-# direction of wind - north - south
-WIND_DIRECTION = (1, 0)  # (dy, dx) 
+TERRAIN_MIN_NEIGHBOURS = {
+    CHAPARRAL: _settings['terrain-min-neighbours']['chaparral'],
+    DENSE_FOREST: _settings['terrain-min-neighbours']['dense_forest'],
+    CANYON: _settings['terrain-min-neighbours']['canyon'],
+    TOWN: _settings['terrain-min-neighbours']['town']
+}
 
-# Wind speed
-WIND_SPEED = 1  # scale of 0-3 (0=no wind, 3=high wind)
+WIND_FACTOR = _settings['wind-factor']
+WIND_DIRECTION = eval(_settings['wind-direction'])  # Convert string "(1,0)" to tuple, dont remove eval()
+WIND_SPEED = _settings['wind-speed']
 
 
 def compute_wind_unit_vector() -> np.ndarray:

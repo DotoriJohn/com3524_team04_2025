@@ -3,10 +3,10 @@ wind-factor: 1.5
 wind-direction: (1,0)
 wind-speed: 0
 burn-duration:
-  chaparral: 6
-  dense_forest: 15
-  canyon: 3
-  town: 5
+  chaparral: 5
+  dense_forest: 30
+  canyon: 0.5
+  town: 3
 ignition-probability:
   chaparral: 0.7
   dense_forest: 0.2
