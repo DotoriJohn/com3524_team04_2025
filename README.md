@@ -48,6 +48,8 @@ The grid will show:
 - Brown - canyon
 - Grey - town
 
+Each run also writes the generated plot and supporting data through `ca_descriptions/forest_fire/helpers/metrics.py` into the `metrics/` folder, so you can review past simulation results without rerunning them.
+
 ## 2. Changing Model Parameters (Wind, Burning Duration, Ignition Probabilites)
 
 The parameters are stored in:
