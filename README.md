@@ -53,6 +53,6 @@ The grid will show:
 The parameters are stored in:
 ca_description/forest_fire/settings.yaml
 
-Besides the wind and ignition settings, you can also point to a different grid map through the same `settings.yaml` file (see the `grid_map` entry) to experiment with alternative terrain layouts.
+Besides the wind and ignition settings, you can also point to a different grid map through the same `settings.yaml` file (see the `grid` entry) to experiment with alternative terrain layouts.
 
 After editing the YAML file, simply re-run python main.py and run the simulation again.
