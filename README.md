@@ -11,6 +11,18 @@ The project uses Python and small set of libraries
 - numpy
 - pyyaml
 
+## 0. Environment setup
+
+It is easiest to run the project from an isolated virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate   # On Windows use: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Run the commands above from the project root only once (or whenever you recreate the environment). Every new terminal session needs the `activate` step before running the simulator.
+
 ## 1. How to run the simulation
 
 From the project root (where `main.py` is):
@@ -42,5 +54,4 @@ The parameters are stored in:
 ca_description/forest_fire/settings.yaml
 
 After editing the YAML file, simply re-run python main.py and run the simulation again.
-
 
