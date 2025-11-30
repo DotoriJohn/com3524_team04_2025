@@ -215,7 +215,5 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-temp/timeline.pkl
 pyrightconfig.json
-*.pkl
 metrics/
