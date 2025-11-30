@@ -17,3 +17,5 @@ terrain-min-neighbours:
   dense_forest: 2
   canyon: 1
   town: 1
+grid: powerplant
+# Possible values: default, ignition, powerplant, connected, enclosed, foresttown, forestthick, water

@@ -1,5 +1,6 @@
 import numpy as np
 from helpers.forest_states import *
+import helpers.grids as gd
 import yaml
 import os
 
@@ -9,40 +10,56 @@ def load_settings(settings_file="settings.yaml"):
     # Get the directory where this file is located
     current_dir = os.path.dirname(os.path.abspath(__file__))
     settings_path = os.path.join(current_dir, "..", settings_file)
-    
-    with open(settings_path, 'r') as f:
+
+    with open(settings_path, "r") as f:
         settings = yaml.safe_load(f)
-    
+
     return settings
+
 
 # Load settings from YAML file
 _settings = load_settings()
 
 # Parse YAML settings to create dictionaries for constant parameters
 BURN_DURATION = {
-    CHAPARRAL: _settings['burn-duration']['chaparral'],
-    DENSE_FOREST: _settings['burn-duration']['dense_forest'],
-    CANYON: _settings['burn-duration']['canyon'],
-    TOWN: _settings['burn-duration']['town']
+    CHAPARRAL: _settings["burn-duration"]["chaparral"],
+    DENSE_FOREST: _settings["burn-duration"]["dense_forest"],
+    CANYON: _settings["burn-duration"]["canyon"],
+    TOWN: _settings["burn-duration"]["town"],
 }
 
 IGNITION_PROB = {
-    CHAPARRAL: _settings['ignition-probability']['chaparral'],
-    DENSE_FOREST: _settings['ignition-probability']['dense_forest'],
-    CANYON: _settings['ignition-probability']['canyon'],
-    TOWN: _settings['ignition-probability']['town']
+    CHAPARRAL: _settings["ignition-probability"]["chaparral"],
+    DENSE_FOREST: _settings["ignition-probability"]["dense_forest"],
+    CANYON: _settings["ignition-probability"]["canyon"],
+    TOWN: _settings["ignition-probability"]["town"],
 }
 
 TERRAIN_MIN_NEIGHBOURS = {
-    CHAPARRAL: _settings['terrain-min-neighbours']['chaparral'],
-    DENSE_FOREST: _settings['terrain-min-neighbours']['dense_forest'],
-    CANYON: _settings['terrain-min-neighbours']['canyon'],
-    TOWN: _settings['terrain-min-neighbours']['town']
+    CHAPARRAL: _settings["terrain-min-neighbours"]["chaparral"],
+    DENSE_FOREST: _settings["terrain-min-neighbours"]["dense_forest"],
+    CANYON: _settings["terrain-min-neighbours"]["canyon"],
+    TOWN: _settings["terrain-min-neighbours"]["town"],
 }
 
-WIND_FACTOR = _settings['wind-factor']
-WIND_DIRECTION = eval(_settings['wind-direction'])  # Convert string "(1,0)" to tuple, dont remove eval()
-WIND_SPEED = _settings['wind-speed']
+_GRID_DICT = {
+    "default": gd.forest_grid,
+    "ignition": gd.forest_grid_ignition,
+    "powerplant": gd.forest_grid_powerplant,
+    "connected": gd.forest_grid_connected,
+    "enclosed": gd.forest_grid_enclosed,
+    "foresttown": gd.forest_grid_foresttown,
+    "forestthick": gd.forest_grid_thick,
+    "water": gd.water_grid_one,
+}
+
+GRID_MAP = _GRID_DICT.get(_settings["grid"])
+
+WIND_FACTOR = _settings["wind-factor"]
+WIND_DIRECTION = eval(
+    _settings["wind-direction"]
+)  # Convert string "(1,0)" to tuple, dont remove eval()
+WIND_SPEED = _settings["wind-speed"]
 
 
 def compute_wind_unit_vector() -> np.ndarray:
